@@ -1,7 +1,7 @@
 {
   "name": "gsb-ai-data-driven-case10-cdc-postgresql-job-poc",
   "jobMode": "VISUAL",
-  "description": "Case 10: CDC from PostgreSQL - S3 CDC source with operation type processing to S3 gzip CSV",
+  "description": "Case 10: CDC from PostgreSQL - Placeholder job for CDC demonstration",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {"maxConcurrentRuns": 1},
   "command": {
@@ -21,6 +21,7 @@
     "--job-language": "python",
     "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
   },
+  "connections": {"connections": ["gsb-ai-data-driven-postgresql-connection-poc"]},
   "maxRetries": 0,
   "allocatedCapacity": 2,
   "timeout": 60,
@@ -28,5 +29,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case10_cdc_postgresql\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case10_cdc_postgresql/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"pipe\",\"WithHeader\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT CAST(NULLIF(TRIM(id), '') AS BIGINT) AS ID, NULLIF(TRIM(name), '') AS NAME, NULLIF(TRIM(email), '') AS EMAIL, NULLIF(TRIM(phone), '') AS PHONE, NULLIF(TRIM(address), '') AS ADDRESS, UPPER(NULLIF(TRIM(operation_type), '')) AS OPERATION_TYPE, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE NULLIF(TRIM(operation_type), '') IS NOT NULL\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case10_cdc_postgresql\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case10_cdc_postgresql/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+  "codeGenConfigurationNodes": "{\"node-1\":{\"PostgreSQLSource\":{\"Name\":\"PostgreSQL CDC Source\",\"Database\":\"source_db\",\"Table\":\"public.cdc_source_table\",\"Connection\":\"gsb-ai-data-driven-postgresql-connection-poc\"}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT *, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case10_cdc\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case10_cdc_postgresql/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
 }

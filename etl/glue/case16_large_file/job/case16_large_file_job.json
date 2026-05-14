@@ -1,7 +1,7 @@
 {
   "name": "gsb-ai-data-driven-case16-large-file-job-poc",
   "jobMode": "VISUAL",
-  "description": "Case 16: Large file performance benchmark - High-worker-count config for large-scale ingestion (5GB-20TB)",
+  "description": "Case 16: Large file performance benchmark - S3 pipe-delimited source to S3 gzip CSV with increased workers",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {"maxConcurrentRuns": 1},
   "command": {
@@ -27,6 +27,6 @@
   "maxCapacity": 10.0,
   "glueVersion": "4.0",
   "numberOfWorkers": 10,
-  "workerType": "G.2X",
-  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case16_large_file\",\"OptimizePerformance\":true,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case16_large_file/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"comma\",\"WithHeader\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT CAST(NULLIF(TRIM(ID), '') AS BIGINT) AS ID, NULLIF(TRIM(TRANSACTION_ID), '') AS TRANSACTION_ID, NULLIF(TRIM(ACCOUNT_ID), '') AS ACCOUNT_ID, TO_TIMESTAMP(NULLIF(TRIM(TRANSACTION_DATE), ''), 'yyyy-MM-dd HH:mm:ss') AS TRANSACTION_DATE, CAST(NULLIF(TRIM(AMOUNT), '') AS DECIMAL(18,2)) AS AMOUNT, NULLIF(TRIM(CURRENCY), '') AS CURRENCY, NULLIF(TRIM(TRANSACTION_TYPE), '') AS TRANSACTION_TYPE, NULLIF(TRIM(STATUS), '') AS STATUS, NULLIF(TRIM(MERCHANT_NAME), '') AS MERCHANT_NAME, NULLIF(TRIM(CATEGORY), '') AS CATEGORY, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case16_large_file\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case16_large_file/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case16_large_file\",\"OptimizePerformance\":true,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case16_large_file/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"pipe\",\"WithHeader\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT * FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case16_large_file\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case16_large_file/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
 }

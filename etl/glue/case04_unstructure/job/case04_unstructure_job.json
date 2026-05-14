@@ -1,7 +1,7 @@
 {
   "name": "gsb-ai-data-driven-case04-unstructure-job-poc",
   "jobMode": "VISUAL",
-  "description": "Case 04: Unstructured Excel ingestion - XLSX source with column transforms to S3 gzip CSV",
+  "description": "Case 04: Unstructured Excel ingestion - Read .xlsx file and transform to S3 gzip CSV",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {"maxConcurrentRuns": 1},
   "command": {
@@ -19,7 +19,8 @@
     "--enable-continuous-cloudwatch-log": "true",
     "--job-bookmark-option": "job-bookmark-disable",
     "--job-language": "python",
-    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/",
+    "--additional-python-modules": "openpyxl"
   },
   "maxRetries": 0,
   "allocatedCapacity": 2,
@@ -28,5 +29,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case04_unstructure\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case04_unstructure/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"comma\",\"WithHeader\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT CAST(NULLIF(TRIM(CAST(ROW_ID AS STRING)), '') AS BIGINT) AS ROW_ID, NULLIF(TRIM(COLUMN_A), '') AS COLUMN_A, NULLIF(TRIM(COLUMN_B), '') AS COLUMN_B, NULLIF(TRIM(COLUMN_C), '') AS COLUMN_C, NULLIF(TRIM(COLUMN_D), '') AS COLUMN_D, NULLIF(TRIM(COLUMN_E), '') AS COLUMN_E, CAST(NULLIF(TRIM(CAST(COLUMN_F AS STRING)), '') AS DECIMAL(18,2)) AS COLUMN_F, CAST(NULLIF(TRIM(CAST(COLUMN_G AS STRING)), '') AS DECIMAL(18,2)) AS COLUMN_G, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case04_unstructure\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case04_unstructure/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3ExcelSource\":{\"Name\":\"S3 Excel Source - case04_unstructure\",\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case04_unstructure/\"],\"Recurse\":true,\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"OutputSchemas\":[{\"Columns\":[]}]}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT *, TO_DATE('20260408', 'yyyyMMdd') AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case04_unstructure\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case04_unstructure/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
 }
