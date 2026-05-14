@@ -1,0 +1,33 @@
+{
+  "name": "gsb-ai-data-driven-case03-fixed-length-load-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 03: Load transformed CSV from S3 staging to Redshift gsbds.case03_fixed_length_table (insert mode)",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case03-fixed-length-load-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "connections": {"connections": ["gsb-ai-data-driven-redshift-connection-poc"]},
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case03_fixed_length staging\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case03_fixed_length/load/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"comma\",\"WithHeader\":true}},\"node-2\":{\"AmazonRedshiftTarget\":{\"Data\":{\"AccessType\":\"connection\",\"Action\":\"append\",\"AdvancedOptions\":[],\"Connection\":{\"Label\":\"gsb-ai-data-driven-redshift-connection-poc\",\"Value\":\"gsb-ai-data-driven-redshift-connection-poc\"},\"MergeAction\":\"simple\",\"MergeWhenMatched\":\"update\",\"MergeWhenNotMatched\":\"insert\",\"Schema\":{\"Label\":\"gsbds\",\"Value\":\"gsbds\"},\"SelectedColumns\":[],\"SourceType\":\"table\",\"StagingTable\":\"gsbds.case03_fixed_length_table_temp\",\"Table\":{\"Label\":\"case03_fixed_length_table\",\"Value\":\"case03_fixed_length_table\"},\"TableSchema\":[{\"Description\":\"VARCHAR\",\"Label\":\"LOAN_ACCOUNT_ID\",\"Value\":\"LOAN_ACCOUNT_ID\"},{\"Description\":\"VARCHAR\",\"Label\":\"ACCOUNT_NAME\",\"Value\":\"ACCOUNT_NAME\"},{\"Description\":\"VARCHAR\",\"Label\":\"CUSTOMER_ID\",\"Value\":\"CUSTOMER_ID\"},{\"Description\":\"VARCHAR\",\"Label\":\"CUSTOMER_NAME\",\"Value\":\"CUSTOMER_NAME\"},{\"Description\":\"VARCHAR\",\"Label\":\"ACCOUNT_TYPE\",\"Value\":\"ACCOUNT_TYPE\"},{\"Description\":\"VARCHAR\",\"Label\":\"PRODUCT_CODE\",\"Value\":\"PRODUCT_CODE\"},{\"Description\":\"VARCHAR\",\"Label\":\"LOAN_TYPE\",\"Value\":\"LOAN_TYPE\"},{\"Description\":\"VARCHAR\",\"Label\":\"START_DATE\",\"Value\":\"START_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"END_DATE\",\"Value\":\"END_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"PRINCIPAL_AMOUNT\",\"Value\":\"PRINCIPAL_AMOUNT\"},{\"Description\":\"VARCHAR\",\"Label\":\"OUTSTANDING_AMOUNT\",\"Value\":\"OUTSTANDING_AMOUNT\"},{\"Description\":\"VARCHAR\",\"Label\":\"INTEREST_RATE\",\"Value\":\"INTEREST_RATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"TERM_MONTHS\",\"Value\":\"TERM_MONTHS\"},{\"Description\":\"VARCHAR\",\"Label\":\"PAYMENT_FREQUENCY\",\"Value\":\"PAYMENT_FREQUENCY\"},{\"Description\":\"VARCHAR\",\"Label\":\"CURRENCY\",\"Value\":\"CURRENCY\"},{\"Description\":\"VARCHAR\",\"Label\":\"BRANCH_CODE\",\"Value\":\"BRANCH_CODE\"},{\"Description\":\"VARCHAR\",\"Label\":\"BRANCH_NAME\",\"Value\":\"BRANCH_NAME\"},{\"Description\":\"VARCHAR\",\"Label\":\"VERSION_DATE\",\"Value\":\"VERSION_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"ETL_UPDATE_DATE\",\"Value\":\"ETL_UPDATE_DATE\"}],\"TempDir\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\",\"Upsert\":false},\"Inputs\":[\"node-1\"],\"Name\":\"Redshift Target - gsbds.case03_fixed_length_table\"}}}"
+}

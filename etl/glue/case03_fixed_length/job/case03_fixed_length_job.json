@@ -1,0 +1,32 @@
+{
+  "name": "gsb-ai-data-driven-case03-fixed-length-job-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 03: Fixed-length file parsing - S3 single-column text source with SUBSTR extraction to S3 gzip CSV",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case03-fixed-length-job-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 Text Source - case03_fixed_length\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[{\"Name\":\"value\",\"Type\":\"string\"}]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case03_fixed_length/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"tab\",\"WithHeader\":false}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT TRIM(SUBSTR(value, 1, 20)) AS LOAN_ACCOUNT_ID, TRIM(SUBSTR(value, 21, 100)) AS ACCOUNT_NAME, TRIM(SUBSTR(value, 121, 10)) AS CUSTOMER_ID, TRIM(SUBSTR(value, 131, 80)) AS CUSTOMER_NAME, TRIM(SUBSTR(value, 211, 1)) AS ACCOUNT_TYPE, TRIM(SUBSTR(value, 212, 5)) AS PRODUCT_CODE, TRIM(SUBSTR(value, 217, 2)) AS LOAN_TYPE, TO_DATE(NULLIF(TRIM(SUBSTR(value, 219, 10)), ''), 'yyyy-MM-dd') AS START_DATE, TO_DATE(NULLIF(TRIM(SUBSTR(value, 229, 10)), ''), 'yyyy-MM-dd') AS END_DATE, CAST(NULLIF(TRIM(SUBSTR(value, 239, 16)), '') AS DECIMAL(18,2)) AS PRINCIPAL_AMOUNT, CAST(NULLIF(TRIM(SUBSTR(value, 255, 16)), '') AS DECIMAL(18,2)) AS OUTSTANDING_AMOUNT, CAST(NULLIF(TRIM(SUBSTR(value, 271, 5)), '') AS DECIMAL(5,2)) AS INTEREST_RATE, CAST(NULLIF(TRIM(SUBSTR(value, 276, 3)), '') AS SMALLINT) AS TERM_MONTHS, TRIM(SUBSTR(value, 279, 1)) AS PAYMENT_FREQUENCY, TRIM(SUBSTR(value, 280, 2)) AS CURRENCY, TRIM(SUBSTR(value, 282, 5)) AS BRANCH_CODE, TRIM(SUBSTR(value, 287, 80)) AS BRANCH_NAME, TO_DATE(NULLIF(TRIM(SUBSTR(value, 367, 10)), ''), 'yyyyMMdd') AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE LENGTH(TRIM(value)) > 0\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case03_fixed_length\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case03_fixed_length/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+}

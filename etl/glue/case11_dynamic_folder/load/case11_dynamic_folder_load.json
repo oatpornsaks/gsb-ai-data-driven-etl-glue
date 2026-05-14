@@ -1,0 +1,33 @@
+{
+  "name": "gsb-ai-data-driven-case11-dynamic-folder-load-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 11: Load transformed CSV from S3 staging to Redshift gsbds.case11_dynamic_folder_table (insert mode)",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case11-dynamic-folder-load-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "connections": {"connections": ["gsb-ai-data-driven-redshift-connection-poc"]},
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case11_dynamic_folder staging\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case11_dynamic_folder/load/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"comma\",\"WithHeader\":true}},\"node-2\":{\"AmazonRedshiftTarget\":{\"Data\":{\"AccessType\":\"connection\",\"Action\":\"append\",\"AdvancedOptions\":[],\"Connection\":{\"Label\":\"gsb-ai-data-driven-redshift-connection-poc\",\"Value\":\"gsb-ai-data-driven-redshift-connection-poc\"},\"MergeAction\":\"simple\",\"MergeWhenMatched\":\"update\",\"MergeWhenNotMatched\":\"insert\",\"Schema\":{\"Label\":\"gsbds\",\"Value\":\"gsbds\"},\"SelectedColumns\":[],\"SourceType\":\"table\",\"StagingTable\":\"gsbds.case11_dynamic_folder_table_temp\",\"Table\":{\"Label\":\"case11_dynamic_folder_table\",\"Value\":\"case11_dynamic_folder_table\"},\"TableSchema\":[{\"Description\":\"VARCHAR\",\"Label\":\"CREATIONDATE\",\"Value\":\"CREATIONDATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"POSITIONID\",\"Value\":\"POSITIONID\"},{\"Description\":\"VARCHAR\",\"Label\":\"POLICY_NUMBER\",\"Value\":\"POLICY_NUMBER\"},{\"Description\":\"VARCHAR\",\"Label\":\"COST_PROFIT_CENTER\",\"Value\":\"COST_PROFIT_CENTER\"},{\"Description\":\"VARCHAR\",\"Label\":\"GSB_ACCOUNT_STATUS\",\"Value\":\"GSB_ACCOUNT_STATUS\"},{\"Description\":\"VARCHAR\",\"Label\":\"OPER_LOAN_DATE\",\"Value\":\"OPER_LOAN_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"PRINCIPALAMOUNT\",\"Value\":\"PRINCIPALAMOUNT\"},{\"Description\":\"VARCHAR\",\"Label\":\"PRINCIPALOUTSTANDING\",\"Value\":\"PRINCIPALOUTSTANDING\"},{\"Description\":\"VARCHAR\",\"Label\":\"INTEREST_RATE\",\"Value\":\"INTEREST_RATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"CASH_AMOUNT\",\"Value\":\"CASH_AMOUNT\"},{\"Description\":\"VARCHAR\",\"Label\":\"ACCURED_INT\",\"Value\":\"ACCURED_INT\"},{\"Description\":\"VARCHAR\",\"Label\":\"DISCOUNT_INT\",\"Value\":\"DISCOUNT_INT\"},{\"Description\":\"VARCHAR\",\"Label\":\"ACCUMULATE_OS\",\"Value\":\"ACCUMULATE_OS\"},{\"Description\":\"VARCHAR\",\"Label\":\"ADVANCE_INTEREST\",\"Value\":\"ADVANCE_INTEREST\"},{\"Description\":\"VARCHAR\",\"Label\":\"LAST_PAYMENT_DATE\",\"Value\":\"LAST_PAYMENT_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"OS_DATE\",\"Value\":\"OS_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"DEFAULT_DATE\",\"Value\":\"DEFAULT_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"POLICY_STATUS\",\"Value\":\"POLICY_STATUS\"},{\"Description\":\"VARCHAR\",\"Label\":\"INTEREST_RECEIVED\",\"Value\":\"INTEREST_RECEIVED\"},{\"Description\":\"VARCHAR\",\"Label\":\"ACCRUAL_BASIS_CD\",\"Value\":\"ACCRUAL_BASIS_CD\"},{\"Description\":\"VARCHAR\",\"Label\":\"LAST_ANNUAL\",\"Value\":\"LAST_ANNUAL\"},{\"Description\":\"VARCHAR\",\"Label\":\"NEXT_ANNUAL\",\"Value\":\"NEXT_ANNUAL\"},{\"Description\":\"VARCHAR\",\"Label\":\"PAYABLE_PLINT\",\"Value\":\"PAYABLE_PLINT\"},{\"Description\":\"VARCHAR\",\"Label\":\"VERSION_DATE\",\"Value\":\"VERSION_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"ETL_UPDATE_DATE\",\"Value\":\"ETL_UPDATE_DATE\"}],\"TempDir\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\",\"Upsert\":false},\"Inputs\":[\"node-1\"],\"Name\":\"Redshift Target - gsbds.case11_dynamic_folder_table\"}}}"
+}

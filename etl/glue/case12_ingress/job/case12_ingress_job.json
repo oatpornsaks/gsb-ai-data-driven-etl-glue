@@ -1,0 +1,32 @@
+{
+  "name": "gsb-ai-data-driven-case12-ingress-job-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 12: Shared Glue Job for all 3 ingress modes (insert, truncate, upsert) - same transform, different load targets",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case12-ingress-job-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case12_ingress\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case12_ingress/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"pipe\",\"WithHeader\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT TO_DATE(NULLIF(TRIM(AS_OF_DATE), ''), 'yyyyMMdd') AS AS_OF_DATE, NULLIF(TRIM(PRODUCT_CODE), '') AS PRODUCT_CODE, NULLIF(TRIM(PRODUCT_NAME), '') AS PRODUCT_NAME, NULLIF(TRIM(CATEGORY_CODE), '') AS CATEGORY_CODE, NULLIF(TRIM(CATEGORY_NAME), '') AS CATEGORY_NAME, NULLIF(TRIM(UNIT), '') AS UNIT, CAST(NULLIF(TRIM(QUANTITY_IN_STOCK), '') AS INTEGER) AS QUANTITY_IN_STOCK, CAST(NULLIF(TRIM(COST_PRICE), '') AS DECIMAL(18,2)) AS COST_PRICE, CAST(NULLIF(TRIM(SELL_PRICE), '') AS DECIMAL(18,2)) AS SELL_PRICE, NULLIF(TRIM(WAREHOUSE_CODE), '') AS WAREHOUSE_CODE, NULLIF(TRIM(LOCATION_CODE), '') AS LOCATION_CODE, NULLIF(TRIM(STATUS), '') AS STATUS, TO_TIMESTAMP(NULLIF(TRIM(CREATED_AT), ''), 'yyyy-MM-dd HH:mm:ss') AS CREATED_AT, NULLIF(TRIM(CREATED_BY), '') AS CREATED_BY, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case12_ingress\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case12_ingress/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+}

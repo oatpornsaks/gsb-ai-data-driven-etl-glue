@@ -1,0 +1,33 @@
+{
+  "name": "gsb-ai-data-driven-case12-ingress-insert-load-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 12: Load data from S3 staging to Redshift gsbds.case12_ingress_insert_table (append mode - insert only)",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case12-ingress-insert-load-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "connections": {"connections": ["gsb-ai-data-driven-redshift-connection-poc"]},
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case12_ingress_insert staging\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case12_ingress_insert/load/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"comma\",\"WithHeader\":true}},\"node-2\":{\"AmazonRedshiftTarget\":{\"Data\":{\"AccessType\":\"connection\",\"Action\":\"append\",\"AdvancedOptions\":[],\"Connection\":{\"Label\":\"gsb-ai-data-driven-redshift-connection-poc\",\"Value\":\"gsb-ai-data-driven-redshift-connection-poc\"},\"MergeAction\":\"simple\",\"MergeWhenMatched\":\"update\",\"MergeWhenNotMatched\":\"insert\",\"Schema\":{\"Label\":\"gsbds\",\"Value\":\"gsbds\"},\"SelectedColumns\":[],\"SourceType\":\"table\",\"StagingTable\":\"gsbds.case12_ingress_insert_table_temp\",\"Table\":{\"Label\":\"case12_ingress_insert_table\",\"Value\":\"case12_ingress_insert_table\"},\"TableSchema\":[{\"Description\":\"VARCHAR\",\"Label\":\"AS_OF_DATE\",\"Value\":\"AS_OF_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"PRODUCT_CODE\",\"Value\":\"PRODUCT_CODE\"},{\"Description\":\"VARCHAR\",\"Label\":\"PRODUCT_NAME\",\"Value\":\"PRODUCT_NAME\"},{\"Description\":\"VARCHAR\",\"Label\":\"CATEGORY_CODE\",\"Value\":\"CATEGORY_CODE\"},{\"Description\":\"VARCHAR\",\"Label\":\"CATEGORY_NAME\",\"Value\":\"CATEGORY_NAME\"},{\"Description\":\"VARCHAR\",\"Label\":\"UNIT\",\"Value\":\"UNIT\"},{\"Description\":\"VARCHAR\",\"Label\":\"QUANTITY_IN_STOCK\",\"Value\":\"QUANTITY_IN_STOCK\"},{\"Description\":\"VARCHAR\",\"Label\":\"COST_PRICE\",\"Value\":\"COST_PRICE\"},{\"Description\":\"VARCHAR\",\"Label\":\"SELL_PRICE\",\"Value\":\"SELL_PRICE\"},{\"Description\":\"VARCHAR\",\"Label\":\"WAREHOUSE_CODE\",\"Value\":\"WAREHOUSE_CODE\"},{\"Description\":\"VARCHAR\",\"Label\":\"LOCATION_CODE\",\"Value\":\"LOCATION_CODE\"},{\"Description\":\"VARCHAR\",\"Label\":\"STATUS\",\"Value\":\"STATUS\"},{\"Description\":\"VARCHAR\",\"Label\":\"CREATED_AT\",\"Value\":\"CREATED_AT\"},{\"Description\":\"VARCHAR\",\"Label\":\"CREATED_BY\",\"Value\":\"CREATED_BY\"},{\"Description\":\"VARCHAR\",\"Label\":\"VERSION_DATE\",\"Value\":\"VERSION_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"ETL_UPDATE_DATE\",\"Value\":\"ETL_UPDATE_DATE\"}],\"TempDir\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\",\"Upsert\":false},\"Inputs\":[\"node-1\"],\"Name\":\"Redshift Target - gsbds.case12_ingress_insert_table\"}}}"
+}

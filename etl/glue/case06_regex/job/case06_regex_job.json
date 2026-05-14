@@ -1,0 +1,32 @@
+{
+  "name": "gsb-ai-data-driven-case06-regex-job-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 06: Regex log parsing - S3 text source with REGEXP_EXTRACT to S3 gzip CSV",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case06-regex-job-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 Text Source - case06_regex\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[{\"Name\":\"value\",\"Type\":\"string\"}]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case06_regex/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"tab\",\"WithHeader\":false}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT REGEXP_EXTRACT(value, '^(\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{4})', 1) AS LOG_DATE, REGEXP_EXTRACT(value, '^\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{4}\\\\\\\\s+(\\\\\\\\d{2}:\\\\\\\\d{2}:\\\\\\\\d{2})', 1) AS LOG_TIME, REGEXP_EXTRACT(value, '\\\\\\\\[(\\\\\\\\d+\\\\\\\\.\\\\\\\\d+\\\\\\\\.\\\\\\\\d+\\\\\\\\.\\\\\\\\d+)\\\\\\\\]', 1) AS IP_ADDRESS, REGEXP_EXTRACT(value, '\\\\\\\\]\\\\\\\\s+(\\\\\\\\S+)\\\\\\\\s+\\\\\\\\d+\\\\\\\\s+ms', 1) AS URL, CAST(REGEXP_EXTRACT(value, '(\\\\\\\\d+)\\\\\\\\s+ms', 1) AS INTEGER) AS RESPONSE_TIME_MS, REGEXP_EXTRACT(value, 'P:\\\\\\\\s+(\\\\\\\\w+)', 1) AS USERNAME, REGEXP_EXTRACT(value, 'CID\\\\\\\\s+IN\\\\\\\\s+\\\\\\\\(([^)]+)\\\\\\\\)', 1) AS CID, REGEXP_EXTRACT(value, 'CIF\\\\\\\\.ACN\\\\\\\\s*=\\\\\\\\s*(\\\\\\\\d+)', 1) AS CIF, CASE WHEN value LIKE '%ERROR%' THEN 'Y' ELSE 'N' END AS ERROR_FLAG, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE LENGTH(TRIM(value)) > 0 AND (REGEXP_EXTRACT(value, '^(\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{4})', 1) IS NOT NULL AND REGEXP_EXTRACT(value, '^(\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{2}\\\\\\\\.\\\\\\\\d{4})', 1) != '')\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case06_regex\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case06_regex/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+}

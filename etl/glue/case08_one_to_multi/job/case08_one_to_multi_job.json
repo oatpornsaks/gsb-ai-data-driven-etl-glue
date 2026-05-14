@@ -1,0 +1,32 @@
+{
+  "name": "gsb-ai-data-driven-case08-one-to-multi-job-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 08: One-to-multi table routing - S3 source filtered by ZONE to 4 separate S3 gzip CSV targets",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case08-one-to-multi-job-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case08_one_to_multi\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case08_one_to_multi/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"pipe\",\"WithHeader\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query - Zone A\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT NULLIF(TRIM(CUSTOMER_ID), '') AS CUSTOMER_ID, NULLIF(TRIM(NAME), '') AS NAME, NULLIF(TRIM(EMAIL), '') AS EMAIL, NULLIF(TRIM(PHONE), '') AS PHONE, NULLIF(TRIM(ZONE), '') AS ZONE, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE TRIM(ZONE) = 'A'\"}},\"node-3\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query - Zone B\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT NULLIF(TRIM(CUSTOMER_ID), '') AS CUSTOMER_ID, NULLIF(TRIM(NAME), '') AS NAME, NULLIF(TRIM(EMAIL), '') AS EMAIL, NULLIF(TRIM(PHONE), '') AS PHONE, NULLIF(TRIM(ZONE), '') AS ZONE, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE TRIM(ZONE) = 'B'\"}},\"node-4\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query - Zone C\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT NULLIF(TRIM(CUSTOMER_ID), '') AS CUSTOMER_ID, NULLIF(TRIM(NAME), '') AS NAME, NULLIF(TRIM(EMAIL), '') AS EMAIL, NULLIF(TRIM(PHONE), '') AS PHONE, NULLIF(TRIM(ZONE), '') AS ZONE, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE TRIM(ZONE) = 'C'\"}},\"node-5\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query - Zone D\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT NULLIF(TRIM(CUSTOMER_ID), '') AS CUSTOMER_ID, NULLIF(TRIM(NAME), '') AS NAME, NULLIF(TRIM(EMAIL), '') AS EMAIL, NULLIF(TRIM(PHONE), '') AS PHONE, NULLIF(TRIM(ZONE), '') AS ZONE, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE TRIM(ZONE) = 'D'\"}},\"node-6\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Target - Zone A\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case08_one_to_multi/load/zone_a/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}},\"node-7\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-3\"],\"Name\":\"S3 Target - Zone B\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case08_one_to_multi/load/zone_b/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}},\"node-8\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-4\"],\"Name\":\"S3 Target - Zone C\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case08_one_to_multi/load/zone_c/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}},\"node-9\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-5\"],\"Name\":\"S3 Target - Zone D\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case08_one_to_multi/load/zone_d/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "gsb-ai-data-driven-case09-api-exchange-rate-job-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 09: API exchange rate ingestion - S3 JSON source with flatten to S3 gzip CSV",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case09-api-exchange-rate-job-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3JsonSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Exclusions\":[],\"Name\":\"S3 JSON Source - case09_api_exchange_rate\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case09_api_exchange_rate/\"],\"Recurse\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT NULLIF(TRIM(currency_id), '') AS CURRENCY, NULLIF(TRIM(country), '') AS COUNTRY, CAST(NULLIF(TRIM(CAST(buying_sight AS STRING)), '') AS DECIMAL(18,6)) AS BUYING_SIGHT, CAST(NULLIF(TRIM(CAST(buying_transfer AS STRING)), '') AS DECIMAL(18,6)) AS BUYING_TRANSFER, CAST(NULLIF(TRIM(CAST(selling AS STRING)), '') AS DECIMAL(18,6)) AS SELLING, CURRENT_DATE() AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case09_api_exchange_rate\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case09_api_exchange_rate/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+}

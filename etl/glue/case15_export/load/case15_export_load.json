@@ -1,0 +1,33 @@
+{
+  "name": "gsb-ai-data-driven-case15-export-load-poc",
+  "jobMode": "VISUAL",
+  "description": "Case 15: Load transformed CSV from S3 staging to Redshift gsbds.case15_export_table (insert mode)",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case15-export-load-poc.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "connections": {"connections": ["gsb-ai-data-driven-redshift-connection-poc"]},
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 CSV Source - case15_export staging\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case15_export_file/load/\"],\"QuoteChar\":\"quote\",\"Recurse\":true,\"Separator\":\"comma\",\"WithHeader\":true}},\"node-2\":{\"AmazonRedshiftTarget\":{\"Data\":{\"AccessType\":\"connection\",\"Action\":\"append\",\"AdvancedOptions\":[],\"Connection\":{\"Label\":\"gsb-ai-data-driven-redshift-connection-poc\",\"Value\":\"gsb-ai-data-driven-redshift-connection-poc\"},\"MergeAction\":\"simple\",\"MergeWhenMatched\":\"update\",\"MergeWhenNotMatched\":\"insert\",\"Schema\":{\"Label\":\"gsbds\",\"Value\":\"gsbds\"},\"SelectedColumns\":[],\"SourceType\":\"table\",\"StagingTable\":\"gsbds.case15_export_table_temp\",\"Table\":{\"Label\":\"case15_export_table\",\"Value\":\"case15_export_table\"},\"TableSchema\":[{\"Description\":\"VARCHAR\",\"Label\":\"ID\",\"Value\":\"ID\"},{\"Description\":\"VARCHAR\",\"Label\":\"NAME\",\"Value\":\"NAME\"},{\"Description\":\"VARCHAR\",\"Label\":\"EMAIL\",\"Value\":\"EMAIL\"},{\"Description\":\"VARCHAR\",\"Label\":\"PHONE\",\"Value\":\"PHONE\"},{\"Description\":\"VARCHAR\",\"Label\":\"DEPARTMENT\",\"Value\":\"DEPARTMENT\"},{\"Description\":\"VARCHAR\",\"Label\":\"POSITION\",\"Value\":\"POSITION\"},{\"Description\":\"VARCHAR\",\"Label\":\"SALARY\",\"Value\":\"SALARY\"},{\"Description\":\"VARCHAR\",\"Label\":\"HIRE_DATE\",\"Value\":\"HIRE_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"VERSION_DATE\",\"Value\":\"VERSION_DATE\"},{\"Description\":\"VARCHAR\",\"Label\":\"ETL_UPDATE_DATE\",\"Value\":\"ETL_UPDATE_DATE\"}],\"TempDir\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\",\"Upsert\":false},\"Inputs\":[\"node-1\"],\"Name\":\"Redshift Target - gsbds.case15_export_table\"}}}"
+}
