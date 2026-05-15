@@ -1,0 +1,32 @@
+{
+  "name": "case01_basic_04_pipe_no_header_report_job",
+  "jobMode": "VISUAL",
+  "description": "Case 01 Variant 04: Pipe-delimited, no header (report format with title/date/separator lines + footer). Reads case01_basic_20260408_04_NH.txt, skips non-data rows using numeric ID filter, casts types, adds VERSION_DATE/ETL_UPDATE_DATE, writes gzip CSV to staging.",
+  "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
+  "executionProperty": {"maxConcurrentRuns": 1},
+  "command": {
+    "name": "glueetl",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case01_basic_04_pipe_no_header_report_job.py",
+    "pythonVersion": "3"
+  },
+  "defaultArguments": {
+    "--enable-metrics": "true",
+    "--enable-spark-ui": "true",
+    "--spark-event-logs-path": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/spark-logs/",
+    "--enable-job-insights": "true",
+    "--enable-observability-metrics": "true",
+    "--enable-glue-datacatalog": "true",
+    "--enable-continuous-cloudwatch-log": "true",
+    "--job-bookmark-option": "job-bookmark-disable",
+    "--job-language": "python",
+    "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
+  },
+  "maxRetries": 0,
+  "allocatedCapacity": 2,
+  "timeout": 60,
+  "maxCapacity": 2.0,
+  "glueVersion": "4.0",
+  "numberOfWorkers": 2,
+  "workerType": "G.1X",
+  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Exclusions\":[],\"Name\":\"S3 CSV Source - 04_NH (pipe, report format)\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[{\"Name\":\"col0\",\"Type\":\"string\"},{\"Name\":\"col1\",\"Type\":\"string\"},{\"Name\":\"col2\",\"Type\":\"string\"},{\"Name\":\"col3\",\"Type\":\"string\"},{\"Name\":\"col4\",\"Type\":\"string\"},{\"Name\":\"col5\",\"Type\":\"string\"},{\"Name\":\"col6\",\"Type\":\"string\"}]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case01_basic/case01_basic_20260408_04_NH.txt\"],\"QuoteChar\":\"quote\",\"Recurse\":false,\"Separator\":\"pipe\",\"WithHeader\":false}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SparkSQL - Filter non-data rows and Transform\",\"OutputSchemas\":[{\"Columns\":[{\"Name\":\"ID\",\"Type\":\"bigint\"},{\"Name\":\"PREFIX\",\"Type\":\"string\"},{\"Name\":\"FNAME\",\"Type\":\"string\"},{\"Name\":\"LNAME\",\"Type\":\"string\"},{\"Name\":\"AGE\",\"Type\":\"smallint\"},{\"Name\":\"BALANCE\",\"Type\":\"decimal(18,2)\"},{\"Name\":\"VERSION_DATE\",\"Type\":\"date\"},{\"Name\":\"ETL_UPDATE_DATE\",\"Type\":\"timestamp\"}]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT CAST(NULLIF(TRIM(col0), '') AS BIGINT) AS ID, NULLIF(TRIM(col1), '') AS PREFIX, NULLIF(TRIM(col2), '') AS FNAME, NULLIF(TRIM(col3), '') AS LNAME, CAST(NULLIF(TRIM(col4), '') AS SMALLINT) AS AGE, CAST(NULLIF(TRIM(col5), '') AS DECIMAL(18,2)) AS BALANCE, TO_DATE('20260408', 'yyyyMMdd') AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE col0 IS NOT NULL AND TRIM(col0) RLIKE '^[0-9]+$'\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case01_basic/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+}
