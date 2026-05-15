@@ -21,7 +21,7 @@
     "--job-language": "python",
     "--TempDir": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/"
   },
-  "connections": {"connections": ["gsb-ai-data-driven-dataeng-redshift-poc"]},
+  "connections": {"connections": ["gsb-ai-data-driven-dataeng-redshift"]},
   "maxRetries": 0,
   "allocatedCapacity": 2,
   "timeout": 60,
