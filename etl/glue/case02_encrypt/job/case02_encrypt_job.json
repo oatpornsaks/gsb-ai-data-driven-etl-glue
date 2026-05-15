@@ -1,5 +1,5 @@
 {
-  "name": "gsb-ai-data-driven-case02-encrypt-job-poc",
+  "name": "case02_encrypt_job",
   "jobMode": "VISUAL",
   "description": "Case 02: Encrypted file ingestion - S3 pipe-delimited source (post-decrypt) with type casting to S3 gzip CSV",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
