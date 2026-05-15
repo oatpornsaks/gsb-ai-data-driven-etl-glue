@@ -6,7 +6,7 @@
   "executionProperty": {"maxConcurrentRuns": 1},
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case02-encrypt-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case02_encrypt_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
