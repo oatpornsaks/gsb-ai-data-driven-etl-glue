@@ -1,12 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case06-regex-job-poc",
+  "name": "case06_regex_job",
   "jobMode": "VISUAL",
   "description": "Case 06: Regex log parsing - S3 text source with regex extraction to S3 gzip CSV",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
-  "executionProperty": {"maxConcurrentRuns": 1},
+  "executionProperty": {
+    "maxConcurrentRuns": 1
+  },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case06-regex-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case06_regex_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
@@ -28,5 +30,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\":{\"S3CsvSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Escaper\":\"\\\\\",\"Exclusions\":[],\"Name\":\"S3 Text Source - case06_regex\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[{\"Name\":\"value\",\"Type\":\"string\"}]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case06_regex/\"],\"QuoteChar\":\"disabled\",\"Recurse\":true,\"Separator\":\"tab\",\"WithHeader\":false}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT TO_DATE(REGEXP_EXTRACT(value, '([0-3][0-9]\\\\\\\\.[0-9][0-9]\\\\\\\\.[0-9]{4})', 1), 'dd.MM.yyyy') AS TRANS_DATE, REGEXP_EXTRACT(value, '([0-2][0-9]:[0-5][0-9]:[0-5][0-9])', 1) AS TRANS_TIME, REGEXP_EXTRACT(value, '\\\\\\\\[([0-9.]+)\\\\\\\\]', 1) AS IP_ADDRESS, REGEXP_EXTRACT(value, '\\\\\\\\] (/[^ ]+)', 1) AS URL, REGEXP_EXTRACT(value, '(\\\\\\\\d+) ms', 1) AS RESPONSE_TIME, REGEXP_EXTRACT(value, 'P: ([^ ]+)', 1) AS USER_ID, REGEXP_EXTRACT(value, 'CID IN \\\\\\\\(([^)]+)\\\\\\\\)', 1) AS CID, REGEXP_EXTRACT(value, 'ACN = ([0-9]+)', 1) AS CIF, CASE WHEN value LIKE '%ERROR%' OR value LIKE '%java%' THEN 1 ELSE 0 END AS ERROR_FLAG, value AS LOG_TXT, TO_DATE('20260408', 'yyyyMMdd') AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE LENGTH(TRIM(value)) > 0 AND (value LIKE '%SELECT CID, ODACN FROM DEPODP WHERE CID IN%' OR value LIKE '%WHERE CIF.ACN =%')\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case06_regex\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case06_regex/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Escaper\": \"\\\\\", \"Exclusions\": [], \"Name\": \"S3 Text Source - case06_regex\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": [{\"Name\": \"col0\", \"Type\": \"string\"}]}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case06_regex/\"], \"QuoteChar\": \"disabled\", \"Recurse\": true, \"Separator\": \"tab\", \"WithHeader\": false}}, \"node-2\": {\"SparkSQL\": {\"Inputs\": [\"node-1\"], \"Name\": \"SQL Query\", \"OutputSchemas\": [{\"Columns\": []}], \"SqlAliases\": [{\"Alias\": \"myDataSource\", \"From\": \"node-1\"}], \"SqlQuery\": \"SELECT TO_DATE(REGEXP_EXTRACT(col0, '([0-3][0-9]\\\\\\\\.[0-9][0-9]\\\\\\\\.[0-9]{4})', 1), 'dd.MM.yyyy') AS TRANS_DATE, REGEXP_EXTRACT(col0, '([0-2][0-9]:[0-5][0-9]:[0-5][0-9])', 1) AS TRANS_TIME, REGEXP_EXTRACT(col0, '\\\\\\\\[([0-9.]+)\\\\\\\\]', 1) AS IP_ADDRESS, REGEXP_EXTRACT(col0, '\\\\\\\\] (/[^ ]+)', 1) AS URL, REGEXP_EXTRACT(col0, '(\\\\\\\\d+) ms', 1) AS RESPONSE_TIME, REGEXP_EXTRACT(col0, 'P: ([^ ]+)', 1) AS USER_ID, REGEXP_EXTRACT(col0, 'CID IN \\\\\\\\(([^)]+)\\\\\\\\)', 1) AS CID, REGEXP_EXTRACT(col0, 'ACN = ([0-9]+)', 1) AS CIF, CASE WHEN col0 LIKE '%ERROR%' OR col0 LIKE '%java%' THEN 1 ELSE 0 END AS ERROR_FLAG, col0 AS LOG_TXT, TO_DATE('20260408', 'yyyyMMdd') AS VERSION_DATE, CURRENT_TIMESTAMP() AS ETL_UPDATE_DATE FROM myDataSource WHERE LENGTH(TRIM(col0)) > 0 AND (col0 LIKE '%SELECT CID, ODACN FROM DEPODP WHERE CID IN%' OR col0 LIKE '%WHERE CIF.ACN =%')\"}}, \"node-3\": {\"S3DirectTarget\": {\"AutoDataQuality\": {\"IsEnabled\": false}, \"Compression\": \"gzip\", \"Format\": \"csv\", \"Inputs\": [\"node-2\"], \"Name\": \"S3 Gzip CSV Target - case06_regex\", \"NumberTargetPartitions\": \"0\", \"PartitionKeys\": [], \"Path\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case06_regex/load/\", \"SchemaChangePolicy\": {\"EnableUpdateCatalog\": false}}}}"
 }

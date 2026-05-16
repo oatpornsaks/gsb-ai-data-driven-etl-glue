@@ -1,14 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case06-regex-load-poc",
+  "name": "case06_regex_load",
   "jobMode": "VISUAL",
-  "description": "Load transformed CSV from S3 staging to Redshift gsbds.case06_regex_table",
+  "description": "Case 06: Load transformed CSV from S3 staging to Redshift gsbds.case06_regex_table (truncate mode) with explicit column selection",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {
     "maxConcurrentRuns": 1
   },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case06-regex-load-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case06_regex_load.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
@@ -25,7 +25,7 @@
   },
   "connections": {
     "connections": [
-      "gsb-ai-data-driven-redshift-connection-poc"
+      "gsb-ai-data-driven-dataeng-redshift-poc"
     ]
   },
   "maxRetries": 0,
@@ -35,5 +35,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Escaper\": \"\\\\\", \"Exclusions\": [], \"Name\": \"S3 CSV Source - case06_regex staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case06_regex/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"append\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-redshift-connection-poc\", \"Value\": \"gsb-ai-data-driven-redshift-connection-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case06_regex_table_temp\", \"Table\": {\"Label\": \"case06_regex_table\", \"Value\": \"case06_regex_table\"}, \"TableSchema\": [], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-1\"], \"Name\": \"Redshift Target - gsbds.case06_regex_table\"}}}"
+  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Exclusions\": [], \"Name\": \"S3 CSV Source - staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case06_regex/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"SparkSQL\": {\"Inputs\": [\"node-1\"], \"Name\": \"SparkSQL - Select exact columns\", \"OutputSchemas\": [{\"Columns\": [{\"Name\": \"VERSION_DATE\", \"Type\": \"date\"}, {\"Name\": \"ETL_UPDATE_DATE\", \"Type\": \"timestamp\"}, {\"Name\": \"SERVER\", \"Type\": \"string\"}, {\"Name\": \"TRANS_DATE\", \"Type\": \"date\"}, {\"Name\": \"TRANS_TIME\", \"Type\": \"string\"}, {\"Name\": \"IP_ADDRESS\", \"Type\": \"string\"}, {\"Name\": \"URL\", \"Type\": \"string\"}, {\"Name\": \"RESPONSE_TIME\", \"Type\": \"string\"}, {\"Name\": \"USER_ID\", \"Type\": \"string\"}, {\"Name\": \"CID\", \"Type\": \"string\"}, {\"Name\": \"CIF\", \"Type\": \"string\"}, {\"Name\": \"ERROR_FLAG\", \"Type\": \"int\"}, {\"Name\": \"LOG_TXT\", \"Type\": \"string\"}]}], \"SqlAliases\": [{\"Alias\": \"staging\", \"From\": \"node-1\"}], \"SqlQuery\": \"SELECT CAST(VERSION_DATE AS DATE) AS VERSION_DATE, CAST(ETL_UPDATE_DATE AS TIMESTAMP) AS ETL_UPDATE_DATE, CAST(NULL AS STRING) AS SERVER, CAST(TRANS_DATE AS DATE) AS TRANS_DATE, TRIM(TRANS_TIME) AS TRANS_TIME, TRIM(IP_ADDRESS) AS IP_ADDRESS, TRIM(URL) AS URL, TRIM(RESPONSE_TIME) AS RESPONSE_TIME, TRIM(USER_ID) AS USER_ID, TRIM(CID) AS CID, TRIM(CIF) AS CIF, CAST(ERROR_FLAG AS INT) AS ERROR_FLAG, TRIM(LOG_TXT) AS LOG_TXT FROM staging WHERE TRANS_DATE IS NOT NULL\"}}, \"node-3\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"truncate\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-dataeng-redshift-poc\", \"Value\": \"gsb-ai-data-driven-dataeng-redshift-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case06_regex_table_temp\", \"Table\": {\"Label\": \"case06_regex_table\", \"Value\": \"case06_regex_table\"}, \"TableSchema\": [{\"Description\": \"DATE\", \"Label\": \"VERSION_DATE\", \"Value\": \"VERSION_DATE\"}, {\"Description\": \"TIMESTAMP\", \"Label\": \"ETL_UPDATE_DATE\", \"Value\": \"ETL_UPDATE_DATE\"}, {\"Description\": \"VARCHAR(10)\", \"Label\": \"SERVER\", \"Value\": \"SERVER\"}, {\"Description\": \"DATE\", \"Label\": \"TRANS_DATE\", \"Value\": \"TRANS_DATE\"}, {\"Description\": \"VARCHAR(8)\", \"Label\": \"TRANS_TIME\", \"Value\": \"TRANS_TIME\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"IP_ADDRESS\", \"Value\": \"IP_ADDRESS\"}, {\"Description\": \"VARCHAR(255)\", \"Label\": \"URL\", \"Value\": \"URL\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"RESPONSE_TIME\", \"Value\": \"RESPONSE_TIME\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"USER_ID\", \"Value\": \"USER_ID\"}, {\"Description\": \"VARCHAR(8000)\", \"Label\": \"CID\", \"Value\": \"CID\"}, {\"Description\": \"VARCHAR(8000)\", \"Label\": \"CIF\", \"Value\": \"CIF\"}, {\"Description\": \"INTEGER\", \"Label\": \"ERROR_FLAG\", \"Value\": \"ERROR_FLAG\"}, {\"Description\": \"VARCHAR(8000)\", \"Label\": \"LOG_TXT\", \"Value\": \"LOG_TXT\"}], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-2\"], \"Name\": \"Redshift Target - gsbds.case06_regex_table\"}}}"
 }
