@@ -1,12 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case05-merge-job-poc",
+  "name": "case05_merge_job",
   "jobMode": "VISUAL",
   "description": "Case 05: Merge multiple files - S3 pipe-delimited source (no header) with transforms to S3 gzip CSV",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
-  "executionProperty": {"maxConcurrentRuns": 1},
+  "executionProperty": {
+    "maxConcurrentRuns": 1
+  },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case05-merge-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case05_merge_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
