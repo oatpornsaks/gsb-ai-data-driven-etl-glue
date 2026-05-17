@@ -1,12 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case09-api-exchange-rate-job-poc",
+  "name": "case09_api_exchange_rate_job",
   "jobMode": "VISUAL",
   "description": "Case 09: API exchange rate - S3 JSON source flattened to tabular format to S3 gzip CSV",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
-  "executionProperty": {"maxConcurrentRuns": 1},
+  "executionProperty": {
+    "maxConcurrentRuns": 1
+  },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case09-api-exchange-rate-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case09_api_exchange_rate_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
@@ -28,5 +30,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\":{\"S3JsonSource\":{\"AdditionalOptions\":{\"EnableSamplePath\":false,\"SamplePath\":\"\"},\"Exclusions\":[],\"JsonPath\":\"\",\"Multiline\":true,\"Name\":\"S3 JSON Source - case09_api_exchange_rate\",\"OptimizePerformance\":false,\"OutputSchemas\":[{\"Columns\":[]}],\"Paths\":[\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case09_api_exchange_rate/\"],\"Recurse\":true}},\"node-2\":{\"SparkSQL\":{\"Inputs\":[\"node-1\"],\"Name\":\"SQL Query\",\"OutputSchemas\":[{\"Columns\":[]}],\"SqlAliases\":[{\"Alias\":\"myDataSource\",\"From\":\"node-1\"}],\"SqlQuery\":\"SELECT TO_TIMESTAMP(NULLIF(TRIM(data_timestamp), ''), 'yyyy-MM-dd\\\\'T\\\\'HH:mm:ssXXX') AS DATA_TIMESTAMP, NULLIF(TRIM(api_name), '') AS API_NAME, TO_DATE(NULLIF(TRIM(data_date), ''), 'yyyy-MM-dd') AS DATA_DATE, UPPER(NULLIF(TRIM(currency), '')) AS CURRENCY, NULLIF(TRIM(country), '') AS COUNTRY, CAST(NULLIF(TRIM(buying_sight), '') AS DECIMAL(10,5)) AS BUYING_SIGHT, CAST(NULLIF(TRIM(buying_transfer), '') AS DECIMAL(10,5)) AS BUYING_TRANSFER, CAST(NULLIF(TRIM(selling), '') AS DECIMAL(10,5)) AS SELLING FROM myDataSource\"}},\"node-3\":{\"S3DirectTarget\":{\"AutoDataQuality\":{\"IsEnabled\":false},\"Compression\":\"gzip\",\"Format\":\"csv\",\"Inputs\":[\"node-2\"],\"Name\":\"S3 Gzip CSV Target - case09_api_exchange_rate\",\"NumberTargetPartitions\":\"0\",\"PartitionKeys\":[],\"Path\":\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case09_api_exchange_rate/load/\",\"SchemaChangePolicy\":{\"EnableUpdateCatalog\":false}}}}"
+  "codeGenConfigurationNodes": "{\"node-1\": {\"S3JsonSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Exclusions\": [], \"JsonPath\": \"\", \"Multiline\": true, \"Name\": \"S3 JSON Source - case09_api_exchange_rate\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/preparing/case09_api_exchange_rate/\"], \"Recurse\": true}}, \"node-2\": {\"SparkSQL\": {\"Inputs\": [\"node-1\"], \"Name\": \"SQL Query\", \"OutputSchemas\": [{\"Columns\": []}], \"SqlAliases\": [{\"Alias\": \"myDataSource\", \"From\": \"node-1\"}], \"SqlQuery\": \"SELECT TO_TIMESTAMP(NULLIF(TRIM(data_timestamp), ''), 'yyyy-MM-dd\\\\'T\\\\'HH:mm:ssXXX') AS DATA_TIMESTAMP, NULLIF(TRIM(api_name), '') AS API_NAME, TO_DATE(NULLIF(TRIM(data_date), ''), 'yyyy-MM-dd') AS DATA_DATE, UPPER(NULLIF(TRIM(currency), '')) AS CURRENCY, NULLIF(TRIM(country), '') AS COUNTRY, CAST(NULLIF(TRIM(buying_sight), '') AS DECIMAL(10,5)) AS BUYING_SIGHT, CAST(NULLIF(TRIM(buying_transfer), '') AS DECIMAL(10,5)) AS BUYING_TRANSFER, CAST(NULLIF(TRIM(selling), '') AS DECIMAL(10,5)) AS SELLING FROM myDataSource\"}}, \"node-3\": {\"S3DirectTarget\": {\"AutoDataQuality\": {\"IsEnabled\": false}, \"Compression\": \"gzip\", \"Format\": \"csv\", \"Inputs\": [\"node-2\"], \"Name\": \"S3 Gzip CSV Target - case09_api_exchange_rate\", \"NumberTargetPartitions\": \"0\", \"PartitionKeys\": [], \"Path\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case09_api_exchange_rate/load/\", \"SchemaChangePolicy\": {\"EnableUpdateCatalog\": false}}}}"
 }

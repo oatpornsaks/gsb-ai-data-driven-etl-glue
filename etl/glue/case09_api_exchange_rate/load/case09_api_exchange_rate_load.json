@@ -1,14 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case09-api-exchange-rate-load-poc",
+  "name": "case09_api_exchange_rate_load",
   "jobMode": "VISUAL",
-  "description": "Load transformed CSV from S3 staging to Redshift gsbds.case09_api_exchange_rate_table",
+  "description": "Case 09: Load transformed CSV from S3 staging to Redshift gsbds.case09_api_exchange_rate_table (truncate mode)",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {
     "maxConcurrentRuns": 1
   },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case09-api-exchange-rate-load-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case09_api_exchange_rate_load.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
@@ -25,7 +25,7 @@
   },
   "connections": {
     "connections": [
-      "gsb-ai-data-driven-redshift-connection-poc"
+      "gsb-ai-data-driven-dataeng-redshift-poc"
     ]
   },
   "maxRetries": 0,
@@ -35,5 +35,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Escaper\": \"\\\\\", \"Exclusions\": [], \"Name\": \"S3 CSV Source - case09_api_exchange_rate staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case09_api_exchange_rate/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"append\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-redshift-connection-poc\", \"Value\": \"gsb-ai-data-driven-redshift-connection-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case09_api_exchange_rate_table_temp\", \"Table\": {\"Label\": \"case09_api_exchange_rate_table\", \"Value\": \"case09_api_exchange_rate_table\"}, \"TableSchema\": [], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-1\"], \"Name\": \"Redshift Target - gsbds.case09_api_exchange_rate_table\"}}}"
+  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Exclusions\": [], \"Name\": \"S3 CSV Source - staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case09_api_exchange_rate/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"SparkSQL\": {\"Inputs\": [\"node-1\"], \"Name\": \"SparkSQL - Select exact columns\", \"OutputSchemas\": [{\"Columns\": [{\"Name\": \"DATA_TIMESTAMP\", \"Type\": \"timestamp\"}, {\"Name\": \"API_NAME\", \"Type\": \"string\"}, {\"Name\": \"DATA_DATE\", \"Type\": \"date\"}, {\"Name\": \"CURRENCY\", \"Type\": \"string\"}, {\"Name\": \"COUNTRY\", \"Type\": \"string\"}, {\"Name\": \"BUYING_SIGHT\", \"Type\": \"decimal(10,5)\"}, {\"Name\": \"BUYING_TRANSFER\", \"Type\": \"decimal(10,5)\"}, {\"Name\": \"SELLING\", \"Type\": \"decimal(10,5)\"}]}], \"SqlAliases\": [{\"Alias\": \"staging\", \"From\": \"node-1\"}], \"SqlQuery\": \"SELECT CAST(DATA_TIMESTAMP AS TIMESTAMP) AS DATA_TIMESTAMP, TRIM(API_NAME) AS API_NAME, CAST(DATA_DATE AS DATE) AS DATA_DATE, TRIM(CURRENCY) AS CURRENCY, TRIM(COUNTRY) AS COUNTRY, CAST(BUYING_SIGHT AS DECIMAL(10,5)) AS BUYING_SIGHT, CAST(BUYING_TRANSFER AS DECIMAL(10,5)) AS BUYING_TRANSFER, CAST(SELLING AS DECIMAL(10,5)) AS SELLING FROM staging WHERE CURRENCY IS NOT NULL\"}}, \"node-3\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"truncate\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-dataeng-redshift-poc\", \"Value\": \"gsb-ai-data-driven-dataeng-redshift-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case09_api_exchange_rate_table_temp\", \"Table\": {\"Label\": \"case09_api_exchange_rate_table\", \"Value\": \"case09_api_exchange_rate_table\"}, \"TableSchema\": [{\"Description\": \"TIMESTAMP\", \"Label\": \"DATA_TIMESTAMP\", \"Value\": \"DATA_TIMESTAMP\"}, {\"Description\": \"VARCHAR(100)\", \"Label\": \"API_NAME\", \"Value\": \"API_NAME\"}, {\"Description\": \"DATE\", \"Label\": \"DATA_DATE\", \"Value\": \"DATA_DATE\"}, {\"Description\": \"VARCHAR(10)\", \"Label\": \"CURRENCY\", \"Value\": \"CURRENCY\"}, {\"Description\": \"VARCHAR(100)\", \"Label\": \"COUNTRY\", \"Value\": \"COUNTRY\"}, {\"Description\": \"DECIMAL(10,5)\", \"Label\": \"BUYING_SIGHT\", \"Value\": \"BUYING_SIGHT\"}, {\"Description\": \"DECIMAL(10,5)\", \"Label\": \"BUYING_TRANSFER\", \"Value\": \"BUYING_TRANSFER\"}, {\"Description\": \"DECIMAL(10,5)\", \"Label\": \"SELLING\", \"Value\": \"SELLING\"}], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-2\"], \"Name\": \"Redshift Target - gsbds.case09_api_exchange_rate_table\"}}}"
 }
