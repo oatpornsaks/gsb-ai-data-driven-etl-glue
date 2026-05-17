@@ -1,12 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case15-export-job-poc",
+  "name": "case15_export_job",
   "jobMode": "VISUAL",
   "description": "Case 15: Export file - S3 comma-delimited CSV source with transforms to S3 gzip CSV",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
-  "executionProperty": {"maxConcurrentRuns": 1},
+  "executionProperty": {
+    "maxConcurrentRuns": 1
+  },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case15-export-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case15_export_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
