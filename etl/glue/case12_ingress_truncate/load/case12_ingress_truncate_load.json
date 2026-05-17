@@ -1,14 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case12-ingress-truncate-load-poc",
+  "name": "case12_ingress_truncate_load",
   "jobMode": "VISUAL",
-  "description": "Load transformed CSV from S3 staging to Redshift gsbds.case12_ingress_truncate_table",
+  "description": "Case 12: Load to Redshift gsbds.case12_ingress_truncate_table (truncate mode)",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {
     "maxConcurrentRuns": 1
   },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case12-ingress-truncate-load-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case12_ingress_truncate_load.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
@@ -25,7 +25,7 @@
   },
   "connections": {
     "connections": [
-      "gsb-ai-data-driven-redshift-connection-poc"
+      "gsb-ai-data-driven-dataeng-redshift-poc"
     ]
   },
   "maxRetries": 0,
@@ -35,5 +35,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Escaper\": \"\\\\\", \"Exclusions\": [], \"Name\": \"S3 CSV Source - case12_ingress_truncate staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case12_ingress/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"truncate\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-redshift-connection-poc\", \"Value\": \"gsb-ai-data-driven-redshift-connection-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case12_ingress_truncate_table_temp\", \"Table\": {\"Label\": \"case12_ingress_truncate_table\", \"Value\": \"case12_ingress_truncate_table\"}, \"TableSchema\": [], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-1\"], \"Name\": \"Redshift Target - gsbds.case12_ingress_truncate_table\"}}}"
+  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Exclusions\": [], \"Name\": \"S3 CSV Source - staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case12_ingress/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"SparkSQL\": {\"Inputs\": [\"node-1\"], \"Name\": \"SparkSQL - Select exact columns\", \"OutputSchemas\": [{\"Columns\": [{\"Name\": \"AS_OF_DATE\", \"Type\": \"date\"}, {\"Name\": \"PRODUCT_CODE\", \"Type\": \"string\"}, {\"Name\": \"PRODUCT_NAME\", \"Type\": \"string\"}, {\"Name\": \"CATEGORY_CODE\", \"Type\": \"string\"}, {\"Name\": \"CATEGORY_NAME\", \"Type\": \"string\"}, {\"Name\": \"UNIT\", \"Type\": \"string\"}, {\"Name\": \"QUANTITY_IN_STOCK\", \"Type\": \"int\"}, {\"Name\": \"COST_PRICE\", \"Type\": \"decimal(15,2)\"}, {\"Name\": \"SELL_PRICE\", \"Type\": \"decimal(15,2)\"}, {\"Name\": \"WAREHOUSE_CODE\", \"Type\": \"string\"}, {\"Name\": \"LOCATION_CODE\", \"Type\": \"string\"}, {\"Name\": \"STATUS\", \"Type\": \"string\"}, {\"Name\": \"CREATED_AT\", \"Type\": \"timestamp\"}, {\"Name\": \"CREATED_BY\", \"Type\": \"string\"}]}], \"SqlAliases\": [{\"Alias\": \"staging\", \"From\": \"node-1\"}], \"SqlQuery\": \"SELECT CAST(AS_OF_DATE AS DATE) AS AS_OF_DATE, TRIM(PRODUCT_CODE) AS PRODUCT_CODE, TRIM(PRODUCT_NAME) AS PRODUCT_NAME, TRIM(CATEGORY_CODE) AS CATEGORY_CODE, TRIM(CATEGORY_NAME) AS CATEGORY_NAME, TRIM(UNIT) AS UNIT, CAST(QUANTITY_IN_STOCK AS INT) AS QUANTITY_IN_STOCK, CAST(COST_PRICE AS DECIMAL(15,2)) AS COST_PRICE, CAST(SELL_PRICE AS DECIMAL(15,2)) AS SELL_PRICE, TRIM(WAREHOUSE_CODE) AS WAREHOUSE_CODE, TRIM(LOCATION_CODE) AS LOCATION_CODE, TRIM(STATUS) AS STATUS, CAST(CREATED_AT AS TIMESTAMP) AS CREATED_AT, TRIM(CREATED_BY) AS CREATED_BY FROM staging WHERE PRODUCT_CODE IS NOT NULL\"}}, \"node-3\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"truncate\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-dataeng-redshift-poc\", \"Value\": \"gsb-ai-data-driven-dataeng-redshift-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case12_ingress_truncate_table_temp\", \"Table\": {\"Label\": \"case12_ingress_truncate_table\", \"Value\": \"case12_ingress_truncate_table\"}, \"TableSchema\": [{\"Description\": \"DATE\", \"Label\": \"AS_OF_DATE\", \"Value\": \"AS_OF_DATE\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"PRODUCT_CODE\", \"Value\": \"PRODUCT_CODE\"}, {\"Description\": \"VARCHAR(200)\", \"Label\": \"PRODUCT_NAME\", \"Value\": \"PRODUCT_NAME\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"CATEGORY_CODE\", \"Value\": \"CATEGORY_CODE\"}, {\"Description\": \"VARCHAR(200)\", \"Label\": \"CATEGORY_NAME\", \"Value\": \"CATEGORY_NAME\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"UNIT\", \"Value\": \"UNIT\"}, {\"Description\": \"INTEGER\", \"Label\": \"QUANTITY_IN_STOCK\", \"Value\": \"QUANTITY_IN_STOCK\"}, {\"Description\": \"DECIMAL(15,2)\", \"Label\": \"COST_PRICE\", \"Value\": \"COST_PRICE\"}, {\"Description\": \"DECIMAL(15,2)\", \"Label\": \"SELL_PRICE\", \"Value\": \"SELL_PRICE\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"WAREHOUSE_CODE\", \"Value\": \"WAREHOUSE_CODE\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"LOCATION_CODE\", \"Value\": \"LOCATION_CODE\"}, {\"Description\": \"CHAR(1)\", \"Label\": \"STATUS\", \"Value\": \"STATUS\"}, {\"Description\": \"TIMESTAMP\", \"Label\": \"CREATED_AT\", \"Value\": \"CREATED_AT\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"CREATED_BY\", \"Value\": \"CREATED_BY\"}], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-2\"], \"Name\": \"Redshift Target - gsbds.case12_ingress_truncate_table\"}}}"
 }

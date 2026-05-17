@@ -1,12 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case12-ingress-job-poc",
+  "name": "case12_ingress_job",
   "jobMode": "VISUAL",
   "description": "Case 12: Ingress modes - S3 pipe-delimited source with type casting to S3 gzip CSV (shared job for insert/truncate/upsert)",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
-  "executionProperty": {"maxConcurrentRuns": 1},
+  "executionProperty": {
+    "maxConcurrentRuns": 1
+  },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case12-ingress-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case12_ingress_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
