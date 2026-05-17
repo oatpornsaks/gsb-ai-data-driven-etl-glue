@@ -1,14 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case16-large-file-load-poc",
+  "name": "case16_large_file_load",
   "jobMode": "VISUAL",
-  "description": "Load transformed CSV from S3 staging to Redshift gsbds.case16_large_file_table",
+  "description": "Case 16: Load large file to Redshift (truncate mode)",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {
     "maxConcurrentRuns": 1
   },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case16-large-file-load-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case16_large_file_load.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
@@ -25,15 +25,15 @@
   },
   "connections": {
     "connections": [
-      "gsb-ai-data-driven-redshift-connection-poc"
+      "gsb-ai-data-driven-dataeng-redshift-poc"
     ]
   },
   "maxRetries": 0,
-  "allocatedCapacity": 2,
-  "timeout": 60,
-  "maxCapacity": 2.0,
+  "allocatedCapacity": 10,
+  "timeout": 120,
+  "maxCapacity": 10.0,
   "glueVersion": "4.0",
-  "numberOfWorkers": 2,
+  "numberOfWorkers": 10,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Escaper\": \"\\\\\", \"Exclusions\": [], \"Name\": \"S3 CSV Source - case16_large_file staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case16_large_file/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"append\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-redshift-connection-poc\", \"Value\": \"gsb-ai-data-driven-redshift-connection-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case16_large_file_table_temp\", \"Table\": {\"Label\": \"case16_large_file_table\", \"Value\": \"case16_large_file_table\"}, \"TableSchema\": [], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-1\"], \"Name\": \"Redshift Target - gsbds.case16_large_file_table\"}}}"
+  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Exclusions\": [], \"Name\": \"S3 CSV Source - staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case16_large_file/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"SparkSQL\": {\"Inputs\": [\"node-1\"], \"Name\": \"SparkSQL - Select exact columns\", \"OutputSchemas\": [{\"Columns\": [{\"Name\": \"TRANSACTION_ID\", \"Type\": \"string\"}, {\"Name\": \"ACCOUNT_NUMBER\", \"Type\": \"string\"}, {\"Name\": \"TRANSACTION_DATE\", \"Type\": \"date\"}, {\"Name\": \"TRANSACTION_TIME\", \"Type\": \"string\"}, {\"Name\": \"AMOUNT\", \"Type\": \"decimal(15,2)\"}, {\"Name\": \"CURRENCY\", \"Type\": \"string\"}, {\"Name\": \"TRANSACTION_TYPE\", \"Type\": \"string\"}, {\"Name\": \"MERCHANT_NAME\", \"Type\": \"string\"}, {\"Name\": \"MERCHANT_CATEGORY\", \"Type\": \"string\"}, {\"Name\": \"BRANCH_CODE\", \"Type\": \"string\"}, {\"Name\": \"CHANNEL\", \"Type\": \"string\"}, {\"Name\": \"STATUS\", \"Type\": \"string\"}, {\"Name\": \"REFERENCE_NUMBER\", \"Type\": \"string\"}, {\"Name\": \"VERSION_DATE\", \"Type\": \"date\"}, {\"Name\": \"ETL_UPDATE_DATE\", \"Type\": \"timestamp\"}]}], \"SqlAliases\": [{\"Alias\": \"staging\", \"From\": \"node-1\"}], \"SqlQuery\": \"SELECT TRIM(TRANSACTION_ID) AS TRANSACTION_ID, TRIM(ACCOUNT_NUMBER) AS ACCOUNT_NUMBER, CAST(TRANSACTION_DATE AS DATE) AS TRANSACTION_DATE, TRIM(TRANSACTION_TIME) AS TRANSACTION_TIME, CAST(AMOUNT AS DECIMAL(15,2)) AS AMOUNT, TRIM(CURRENCY) AS CURRENCY, TRIM(TRANSACTION_TYPE) AS TRANSACTION_TYPE, TRIM(MERCHANT_NAME) AS MERCHANT_NAME, TRIM(MERCHANT_CATEGORY) AS MERCHANT_CATEGORY, TRIM(BRANCH_CODE) AS BRANCH_CODE, TRIM(CHANNEL) AS CHANNEL, TRIM(STATUS) AS STATUS, TRIM(REFERENCE_NUMBER) AS REFERENCE_NUMBER, CAST(VERSION_DATE AS DATE) AS VERSION_DATE, CAST(ETL_UPDATE_DATE AS TIMESTAMP) AS ETL_UPDATE_DATE FROM staging WHERE TRANSACTION_ID IS NOT NULL\"}}, \"node-3\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"truncate\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-dataeng-redshift-poc\", \"Value\": \"gsb-ai-data-driven-dataeng-redshift-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case16_large_file_table_temp\", \"Table\": {\"Label\": \"case16_large_file_table\", \"Value\": \"case16_large_file_table\"}, \"TableSchema\": [{\"Description\": \"VARCHAR(36)\", \"Label\": \"TRANSACTION_ID\", \"Value\": \"TRANSACTION_ID\"}, {\"Description\": \"VARCHAR(20)\", \"Label\": \"ACCOUNT_NUMBER\", \"Value\": \"ACCOUNT_NUMBER\"}, {\"Description\": \"DATE\", \"Label\": \"TRANSACTION_DATE\", \"Value\": \"TRANSACTION_DATE\"}, {\"Description\": \"VARCHAR(8)\", \"Label\": \"TRANSACTION_TIME\", \"Value\": \"TRANSACTION_TIME\"}, {\"Description\": \"DECIMAL(15,2)\", \"Label\": \"AMOUNT\", \"Value\": \"AMOUNT\"}, {\"Description\": \"VARCHAR(3)\", \"Label\": \"CURRENCY\", \"Value\": \"CURRENCY\"}, {\"Description\": \"VARCHAR(20)\", \"Label\": \"TRANSACTION_TYPE\", \"Value\": \"TRANSACTION_TYPE\"}, {\"Description\": \"VARCHAR(100)\", \"Label\": \"MERCHANT_NAME\", \"Value\": \"MERCHANT_NAME\"}, {\"Description\": \"VARCHAR(50)\", \"Label\": \"MERCHANT_CATEGORY\", \"Value\": \"MERCHANT_CATEGORY\"}, {\"Description\": \"VARCHAR(10)\", \"Label\": \"BRANCH_CODE\", \"Value\": \"BRANCH_CODE\"}, {\"Description\": \"VARCHAR(20)\", \"Label\": \"CHANNEL\", \"Value\": \"CHANNEL\"}, {\"Description\": \"VARCHAR(10)\", \"Label\": \"STATUS\", \"Value\": \"STATUS\"}, {\"Description\": \"VARCHAR(30)\", \"Label\": \"REFERENCE_NUMBER\", \"Value\": \"REFERENCE_NUMBER\"}, {\"Description\": \"DATE\", \"Label\": \"VERSION_DATE\", \"Value\": \"VERSION_DATE\"}, {\"Description\": \"TIMESTAMP\", \"Label\": \"ETL_UPDATE_DATE\", \"Value\": \"ETL_UPDATE_DATE\"}], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-2\"], \"Name\": \"Redshift Target - gsbds.case16_large_file_table\"}}}"
 }
