@@ -1,14 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case08-zone-b-load-poc",
+  "name": "case08_zone_b_load",
   "jobMode": "VISUAL",
-  "description": "Load transformed CSV from S3 staging to Redshift gsbds.case08_zone_b_table",
+  "description": "Case 08: Load zone B CSV from S3 staging to Redshift gsbds.case08_zone_b_table (truncate mode)",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
   "executionProperty": {
     "maxConcurrentRuns": 1
   },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case08-zone-b-load-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case08_zone_b_load.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
@@ -25,7 +25,7 @@
   },
   "connections": {
     "connections": [
-      "gsb-ai-data-driven-redshift-connection-poc"
+      "gsb-ai-data-driven-dataeng-redshift-poc"
     ]
   },
   "maxRetries": 0,
@@ -35,5 +35,5 @@
   "glueVersion": "4.0",
   "numberOfWorkers": 2,
   "workerType": "G.1X",
-  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Escaper\": \"\\\\\", \"Exclusions\": [], \"Name\": \"S3 CSV Source - case08_zone_b staging\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case08_one_to_multi/load/zone_b/load/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"append\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-redshift-connection-poc\", \"Value\": \"gsb-ai-data-driven-redshift-connection-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case08_zone_b_table_temp\", \"Table\": {\"Label\": \"case08_zone_b_table\", \"Value\": \"case08_zone_b_table\"}, \"TableSchema\": [], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-1\"], \"Name\": \"Redshift Target - gsbds.case08_zone_b_table\"}}}"
+  "codeGenConfigurationNodes": "{\"node-1\": {\"S3CsvSource\": {\"AdditionalOptions\": {\"EnableSamplePath\": false, \"SamplePath\": \"\"}, \"Exclusions\": [], \"Name\": \"S3 CSV Source - staging zone B\", \"OptimizePerformance\": false, \"OutputSchemas\": [{\"Columns\": []}], \"Paths\": [\"s3://gsb-ai-data-driven-data-nonprod-201064226169/staging/case08_one_to_multi/load/zone_b/\"], \"QuoteChar\": \"quote\", \"Recurse\": true, \"Separator\": \"comma\", \"WithHeader\": true}}, \"node-2\": {\"SparkSQL\": {\"Inputs\": [\"node-1\"], \"Name\": \"SparkSQL - Select exact columns\", \"OutputSchemas\": [{\"Columns\": [{\"Name\": \"CUSTOMER_ID\", \"Type\": \"string\"}, {\"Name\": \"NAME\", \"Type\": \"string\"}, {\"Name\": \"EMAIL\", \"Type\": \"string\"}, {\"Name\": \"PHONE\", \"Type\": \"string\"}, {\"Name\": \"ZONE\", \"Type\": \"string\"}]}], \"SqlAliases\": [{\"Alias\": \"staging\", \"From\": \"node-1\"}], \"SqlQuery\": \"SELECT TRIM(CUSTOMER_ID) AS CUSTOMER_ID, TRIM(NAME) AS NAME, TRIM(EMAIL) AS EMAIL, TRIM(PHONE) AS PHONE, TRIM(ZONE) AS ZONE FROM staging WHERE CUSTOMER_ID IS NOT NULL\"}}, \"node-3\": {\"AmazonRedshiftTarget\": {\"Data\": {\"AccessType\": \"connection\", \"Action\": \"truncate\", \"AdvancedOptions\": [], \"Connection\": {\"Label\": \"gsb-ai-data-driven-dataeng-redshift-poc\", \"Value\": \"gsb-ai-data-driven-dataeng-redshift-poc\"}, \"MergeAction\": \"simple\", \"MergeWhenMatched\": \"update\", \"MergeWhenNotMatched\": \"insert\", \"Schema\": {\"Label\": \"gsbds\", \"Value\": \"gsbds\"}, \"SelectedColumns\": [], \"SourceType\": \"table\", \"StagingTable\": \"gsbds.case08_zone_b_table_temp\", \"Table\": {\"Label\": \"case08_zone_b_table\", \"Value\": \"case08_zone_b_table\"}, \"TableSchema\": [{\"Description\": \"VARCHAR(20)\", \"Label\": \"CUSTOMER_ID\", \"Value\": \"CUSTOMER_ID\"}, {\"Description\": \"VARCHAR(100)\", \"Label\": \"NAME\", \"Value\": \"NAME\"}, {\"Description\": \"VARCHAR(100)\", \"Label\": \"EMAIL\", \"Value\": \"EMAIL\"}, {\"Description\": \"VARCHAR(20)\", \"Label\": \"PHONE\", \"Value\": \"PHONE\"}, {\"Description\": \"VARCHAR(10)\", \"Label\": \"ZONE\", \"Value\": \"ZONE\"}], \"TempDir\": \"s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/temp/\", \"Upsert\": false}, \"Inputs\": [\"node-2\"], \"Name\": \"Redshift Target - gsbds.case08_zone_b_table\"}}}"
 }

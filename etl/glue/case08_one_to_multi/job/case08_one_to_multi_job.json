@@ -1,12 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case08-one-to-multi-job-poc",
+  "name": "case08_one_to_multi_job",
   "jobMode": "VISUAL",
   "description": "Case 08: One-to-multi table routing - S3 source filtered by ZONE to 4 separate S3 gzip CSV targets",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
-  "executionProperty": {"maxConcurrentRuns": 1},
+  "executionProperty": {
+    "maxConcurrentRuns": 1
+  },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case08-one-to-multi-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case08_one_to_multi_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
