@@ -1,12 +1,14 @@
 {
-  "name": "gsb-ai-data-driven-case13-delta-date-job-poc",
+  "name": "case13_delta_date_job",
   "jobMode": "VISUAL",
   "description": "Case 13: Delta date logic - S3 pipe-delimited source with simple pass-through to S3 gzip CSV",
   "role": "arn:aws:iam::201064226169:role/gsb-ai-data-driven-glue-role-poc",
-  "executionProperty": {"maxConcurrentRuns": 1},
+  "executionProperty": {
+    "maxConcurrentRuns": 1
+  },
   "command": {
     "name": "glueetl",
-    "scriptLocation": "s3://gsb-ai-data-driven-artifacts-nonprod-201064226169/glue-scripts/gsb-ai-data-driven-case13-delta-date-job-poc.py",
+    "scriptLocation": "s3://gsb-ai-data-driven-data-nonprod-201064226169/glue/scripts/case13_delta_date_job.py",
     "pythonVersion": "3"
   },
   "defaultArguments": {
